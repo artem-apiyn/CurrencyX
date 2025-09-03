@@ -1,30 +1,47 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: "./src/index.tsx",
   output: {
-    filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
+    filename: "bundle.[contenthash].js",
     clean: true,
+    publicPath: "/",
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
+    alias: {
+      "@": path.resolve(__dirname, "src"), 
+    },
   },
   module: {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
         use: "ts-loader",
+        exclude: /node_modules/,
       },
       {
-        test: /\.scss$/,
+        test: /\.s[ac]ss$/i,
         use: [
-          "style-loader",
-          "css-loader",   
-          "sass-loader",  
+          MiniCssExtractPlugin.loader, 
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                exportOnlyLocals: false,
+              },
+              esModule: false, 
+            }
+          },
+          "sass-loader",
         ],
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
@@ -36,11 +53,18 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
+    new MiniCssExtractPlugin({
+      filename: "styles.[contenthash].css",
+    }),
   ],
   devServer: {
-    static: "./dist",
+    static: {
+      directory: path.join(__dirname, "public"),
+    },
+    compress: true,
     port: 3000,
-    open: true,
+    historyApiFallback: true, 
     hot: true,
   },
+  mode: "development",
 };

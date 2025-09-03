@@ -1,9 +1,10 @@
 import React from "react";
+import styles from './Converter.module.scss'
 
-const ConverterPage = () => {
+const ConverterPage: React.FC = () => {
     return (
-        <div>
-            ConverterPage
+        <div className={styles.container}>
+            <h1>Currency converter</h1>
         </div>
     )
 }
