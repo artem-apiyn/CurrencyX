@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import styles from './Converter.module.scss'
+import styles from '../../styles/Converter.module.scss'
 import AmountInput from "@/components/ConverterPage/AmountInput";
 import CurrencyCard from "@/components/ConverterPage/CurrencyCard";
 import { loadSettings, saveSettings } from "@/utils/storage";
@@ -94,11 +94,11 @@ const ConverterPage = () => {
                         <ResultCard amount={amount} rate={rate} from={from} to={to} lastUpdated={lastUpdated} />
                     </div>
                     
-                    </div>
-                    {openModalFor && rates && (
-                        <CurrencyModal open={!!openModalFor} onClose={() => setOpenModalFor(null)} rates={rates} selected={openModalFor === 'from' ? from : to} onSelect={handleSelect} />
-                    )}
-                    {error ? <div className={styles.error}>{error}</div> : null}
+                </div>
+                {openModalFor && rates && (
+                    <CurrencyModal open={!!openModalFor} onClose={() => setOpenModalFor(null)} rates={rates} selected={openModalFor === 'from' ? from : to} onSelect={handleSelect} />
+                )}
+                {error ? <div className={styles.error}>{error}</div> : null}
             </div>
             
             

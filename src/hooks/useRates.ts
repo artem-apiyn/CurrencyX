@@ -13,27 +13,21 @@ export function useRates() {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isCacheStale = useCallback(() => {
-    if (!lastUpdated) return true;
-    return Date.now() - lastUpdated > TTL;
-  }, [lastUpdated]);
-
   const load = useCallback(async (force = false) => {
-    if (!force && !isCacheStale() && rates) return;
+    const stale = !lastUpdated || Date.now() - lastUpdated > TTL;
+    if (!force && !stale && rates) return;
 
     setLoading(true);
     try {
       const apiRes: RatesResponse = await fetchRatesVatComply();
-      if (apiRes && apiRes.rates) {
-        const ts = Date.now();
-        setRates(apiRes.rates);
-        setBase(apiRes.base || 'EUR');
-        setLastUpdated(ts);
-        saveCache(CACHE_KEY, { base: apiRes.base || 'EUR', rates: apiRes.rates, timestamp: ts });
-        setError(null);
-      } else {
-        throw new Error('Invalid API response');
-      }
+      if (!apiRes?.rates) throw new Error('Invalid API response');
+
+      const ts = Date.now();
+      setRates(apiRes.rates);
+      setBase(apiRes.base || 'EUR');
+      setLastUpdated(ts);
+      saveCache(CACHE_KEY, { base: apiRes.base || 'EUR', rates: apiRes.rates, timestamp: ts });
+      setError(null);
     } catch (e: unknown) {
       const errMsg = e instanceof Error ? e.message : String(e);
       const cache: RatesCache | null = loadCache<RatesCache>(CACHE_KEY);
@@ -48,7 +42,7 @@ export function useRates() {
     } finally {
       setLoading(false);
     }
-  }, [rates, isCacheStale]);
+  }, []); 
 
   useEffect(() => {
     const cache = loadCache<RatesCache>(CACHE_KEY);
@@ -66,22 +60,16 @@ export function useRates() {
   }, [load]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (isCacheStale()) {
-        load(true);
-      }
-    }, TTL);
-
+    const interval = setInterval(() => load(true), TTL);
     return () => clearInterval(interval);
-  }, [load, isCacheStale]);
+  }, [load]);
 
-  return useMemo(() => ({
+  return {
     rates,
     base,
     lastUpdated,
     isLoading,
     error,
     refresh: () => load(true),
-    isCacheStale,
-  }), [rates, base, lastUpdated, isLoading, error, load, isCacheStale]);
+  };
 }

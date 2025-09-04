@@ -1,0 +1,18 @@
+.btn {
+    padding:4px 8px;
+    background: var(--bg-primary);
+    border:1px solid var(--bg-outline);
+    color: var(--primary);
+    border-radius:8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor:pointer;
+}
+.swapBtn {
+    padding:8px 12px;
+    border-radius:8px;
+    background:#fff;
+    border:1px solid #e6eef9;
+    cursor:pointer;
+    font-size:18px;
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styles from '../../styles/Button.module.scss';
 
 type RefreshButtonProps = { 
   onRefresh: () => Promise<void> | void; 
@@ -17,7 +18,7 @@ const RefreshButton = ({ onRefresh, disabled }: RefreshButtonProps) => {
     }
   };
   return (
-    <button onClick={handle} disabled={busy || disabled}>
+    <button className={styles.btn} onClick={handle} disabled={busy || disabled}>
       {busy ? 'Refreshing...' : 'Refresh rates'}
     </button>
   );

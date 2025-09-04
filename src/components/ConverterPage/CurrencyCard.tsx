@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../pages/ConverterPage/Converter.module.scss';
+import styles from '../../styles/Converter.module.scss';
 
 type CurrencyCardProps = {
   code: string;

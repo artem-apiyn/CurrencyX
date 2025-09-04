@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../../styles/Button.module.scss';
 
 type SwapButtonProps = {
   onSwap: () => void 
@@ -6,7 +7,7 @@ type SwapButtonProps = {
 
 const SwapButton = ({ onSwap }: SwapButtonProps) => {
   return (
-    <button  onClick={onSwap} aria-label="Swap currencies">
+    <button className={styles.swapBtn} onClick={onSwap} aria-label="Swap currencies">
       ⇄
     </button>
   );

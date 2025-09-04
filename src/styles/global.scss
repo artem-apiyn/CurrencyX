@@ -1,13 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
   --bg: #FAFAFA;
   --muted: #737373;
   --primary: #1447E6;
   --border-primary: #51A2FF;
-  --outline: #BEDBFF;
+  --bg-primary: #EFF6FF;
+  --bg-outline: #BEDBFF;
   --card: #f8fafc;
   --border: #D4D4D4;
   --text-base: #0A0A0A;
 }
-* { box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; margin:0; background: #ffffff; color:var(--text-base); }
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  background: #ffffff;
+  color: var(--text-base);
+}

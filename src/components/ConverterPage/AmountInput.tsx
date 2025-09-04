@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../../pages/ConverterPage/Converter.module.scss';
+import styles from '../../styles/Converter.module.scss';
 
 type AmountInputProps = {
   value: string;
@@ -16,7 +16,7 @@ const AmountInput = ({ value, onChange }: AmountInputProps) => {
 
   return (
     <div className={styles.amountInput}>
-      <p className={styles.label}>Amount</p>
+      <label className={styles.label}>Amount</label>
       <input className={styles.input} type="text" value={value} onChange={handle} inputMode="decimal" />
     </div>
   );

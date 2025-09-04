@@ -1,0 +1,166 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 1000px;
+  height: 487px;
+  max-width: 95%;
+  gap: 30px;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+
+  h1 {
+    display: flex;
+    margin: 0;
+    font-size: 32px;
+    font-weight: 600;
+    justify-content: center;
+  }
+
+  p {
+    display: flex;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    justify-content: center;
+  }
+}
+
+.controlsRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.panelRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  max-height: 318px;
+  height: 100%;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.leftPanel {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.rightPanel {
+  display: flex;
+  height: 100%;
+  min-width: 260px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.networkIndicator {
+  font-size: 13px;
+  color: #374151;
+  display: flex;
+  align-items: center;
+}
+
+.online {
+  color: #10b981;
+}
+
+.offline {
+  color: #ef4444;
+}
+
+.updated {
+  margin-left: 8px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.amountInput {
+  display: flex;
+  margin-bottom: 16px;
+  flex-direction: column;
+
+  .input {
+    justify-items: center;
+  }
+}
+
+.label {
+  font-size: 12px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: var(--bg);
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--border-primary);
+    outline: 2px solid var(--bg-outline);
+  }
+}
+
+.selectorRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.currencyCard {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6eef9;
+  min-width: 160px;
+  background: #fff;
+  text-align: left;
+}
+
+.currencyCode {
+  font-weight: 600;
+}
+
+.currencyName {
+  color: #6b7280;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.noteSmall {
+  color: #6b7280;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.error {
+  margin-top: 12px;
+  color: #dc2626;
+}
