@@ -1,21 +1,23 @@
-const safeGet = (k: string) => {
+const safeGet = <T>(key: string): T | null => {
   try {
-    const raw = localStorage.getItem(k);
-    return raw ? JSON.parse(raw) : null;
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : null;
   } catch {
     return null;
   }
 };
 
-const safeSet = (k: string, v: any) => {
+const safeSet = <T>(key: string, value: T): void => {
   try {
-    localStorage.setItem(k, JSON.stringify(v));
+    localStorage.setItem(key, JSON.stringify(value));
   } catch {}
 };
 
-export const loadCache = <T>(key: string): T | null => safeGet(key);
-export const saveCache = (key: string, value: any) => safeSet(key, value);
+export const loadCache = <T>(key: string): T | null => safeGet<T>(key);
+export const saveCache = <T>(key: string, value: T): void => safeSet<T>(key, value);
 
-export const saveSettings = (key = 'converter_settings', payload: any) =>
-  saveCache(key, payload);
-export const loadSettings = (key = 'converter_settings') => loadCache<any>(key);
+export const saveSettings = <T = unknown>(key = 'converter_settings', payload: T): void =>
+  saveCache<T>(key, payload);
+
+export const loadSettings = <T = unknown>(key = 'converter_settings'): T | null =>
+  loadCache<T>(key);

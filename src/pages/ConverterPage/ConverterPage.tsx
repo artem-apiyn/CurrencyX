@@ -14,6 +14,12 @@ import RefreshButton from "@/components/ConverterPage/RefreshButton";
 const DEFAULT_FROM = 'USD';
 const DEFAULT_TO = 'EUR';
 
+type Settings = {
+  from: string;
+  to: string;
+  amount?: number;
+};
+
 function computeRate(rates: Record<string, number> | null, base: string | null, from: string, to: string) {
   if (!rates || !base) return undefined;
   if (from === to) return 1;
@@ -25,10 +31,10 @@ function computeRate(rates: Record<string, number> | null, base: string | null, 
 
 const ConverterPage = () => {
     const { rates, base, lastUpdated, isLoading, error, refresh } = useRates();
-    const settings = loadSettings();
+    const settings = loadSettings<Settings>();
     const [from, setFrom] = useState<string>(settings?.from || DEFAULT_FROM);
     const [to, setTo] = useState<string>(settings?.to || DEFAULT_TO);
-    const [amountStr, setAmountStr] = useState<string>(settings?.amount || '1');
+    const [amountStr, setAmountStr] = useState<string>(settings?.amount?.toString() || '1');
 
     const [openModalFor, setOpenModalFor] = useState<'from' | 'to' | null>(null);
 
@@ -57,7 +63,6 @@ const ConverterPage = () => {
         return to;
         });
     };
-
 
     return (
         <div className={styles.container}>

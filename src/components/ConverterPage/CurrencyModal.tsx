@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from '../../styles/Modal.module.scss';
 
@@ -31,45 +31,56 @@ const ModalRoot = ({ children }: ModalRootProps) => {
 const CurrencyModal = ({ open, onClose, rates, selected, onSelect }: CurrencyModalProps) => {
   const [query, setQuery] = useState('');
   const [highlight, setHighlight] = useState(0);
-  const list = Object.keys(rates || {}).sort();
-  const filtered = list.filter((c) => c.toLowerCase().includes(query.trim().toLowerCase()));
-  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const list = useMemo(() => Object.keys(rates || {}).sort(), [rates]);
+  const filtered = useMemo(
+    () => list.filter(c => c.toLowerCase().includes(query.trim().toLowerCase())),
+    [list, query]
+  );
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (open) {
       setQuery('');
       setHighlight(0);
-      setTimeout(() => inputRef.current?.focus(), 0);
+      inputRef.current?.focus();
     }
   }, [open]);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
       if (!open) return;
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setHighlight((h) => Math.min(h + 1, filtered.length - 1));
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setHighlight((h) => Math.max(h - 1, 0));
-      }
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const code = filtered[highlight];
-        if (code) {
-          onSelect(code);
-          onClose();
+
+      switch (e.key) {
+        case 'Escape': onClose(); break;
+        case 'ArrowDown':
+          e.preventDefault();
+          setHighlight(h => Math.min(h + 1, filtered.length - 1));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setHighlight(h => Math.max(h - 1, 0));
+          break;
+        case 'Enter': {
+          e.preventDefault();
+          const code = filtered[highlight];
+          if (code) { onSelect(code); onClose(); }
+          break;
         }
       }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, filtered, highlight, onClose, onSelect]);
+    },
+    [open, filtered, highlight, onClose, onSelect]
+  );
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
 
   if (!open) return null;
+
 
   return (
     <ModalRoot>

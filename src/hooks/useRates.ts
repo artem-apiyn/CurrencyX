@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo, useLayoutEffect } from 'react';
 import { fetchRatesVatComply } from '../api/rates';
 import { loadCache, saveCache } from '../utils/storage';
 import { RatesCache, RatesResponse } from '../utils/types';
@@ -13,34 +13,42 @@ export function useRates() {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const isCacheStale = useCallback(() => {
+    if (!lastUpdated) return true;
+    return Date.now() - lastUpdated > TTL;
+  }, [lastUpdated]);
+
   const load = useCallback(async (force = false) => {
+    if (!force && !isCacheStale() && rates) return;
+
     setLoading(true);
     try {
       const apiRes: RatesResponse = await fetchRatesVatComply();
       if (apiRes && apiRes.rates) {
+        const ts = Date.now();
         setRates(apiRes.rates);
         setBase(apiRes.base || 'EUR');
-        const ts = Date.now();
         setLastUpdated(ts);
         saveCache(CACHE_KEY, { base: apiRes.base || 'EUR', rates: apiRes.rates, timestamp: ts });
         setError(null);
       } else {
         throw new Error('Invalid API response');
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const errMsg = e instanceof Error ? e.message : String(e);
       const cache: RatesCache | null = loadCache<RatesCache>(CACHE_KEY);
       if (cache) {
         setRates(cache.rates);
         setBase(cache.base);
         setLastUpdated(cache.timestamp);
-        setError('Using cached rates — failed to fetch new rates');
+        setError(`Using cached rates — ${errMsg}`);
       } else {
-        setError('Failed to fetch rates and no cache available');
+        setError(`Failed to fetch rates and no cache available — ${errMsg}`);
       }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [rates, isCacheStale]);
 
   useEffect(() => {
     const cache = loadCache<RatesCache>(CACHE_KEY);
@@ -49,7 +57,9 @@ export function useRates() {
       setBase(cache.base);
       setLastUpdated(cache.timestamp);
     }
+
     load();
+
     const onOnline = () => load(true);
     window.addEventListener('online', onOnline);
     return () => window.removeEventListener('online', onOnline);
@@ -63,14 +73,9 @@ export function useRates() {
     }, TTL);
 
     return () => clearInterval(interval);
-  }, [load, lastUpdated]);
+  }, [load, isCacheStale]);
 
-  const isCacheStale = () => {
-    if (!lastUpdated) return true;
-    return Date.now() - lastUpdated > TTL;
-  };
-
-  return {
+  return useMemo(() => ({
     rates,
     base,
     lastUpdated,
@@ -78,5 +83,5 @@ export function useRates() {
     error,
     refresh: () => load(true),
     isCacheStale,
-  };
+  }), [rates, base, lastUpdated, isLoading, error, load, isCacheStale]);
 }
