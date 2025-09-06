@@ -25,7 +25,7 @@ export const OfflineIcon = () => (
 )
 export const SwapIcon = () => (
     <svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M1.25 5.625H14.75L10.25 1.125M15.0496 9.375H1.54962L6.04962 13.875" stroke="#0A0A0A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M1.25 5.625H14.75L10.25 1.125M15.0496 9.375H1.54962L6.04962 13.875" stroke="#0A0A0A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 )
 export const ClockIcon = () => (
