@@ -1,5 +1,6 @@
 import React from 'react';
-import styles from '../../styles/Converter.module.scss';
+import styles from '@/styles/Converter.module.scss'
+import { Input } from '../ui';
 
 type AmountInputProps = {
   value: string;
@@ -17,9 +18,9 @@ const AmountInput = ({ value, onChange }: AmountInputProps) => {
   return (
     <div className={styles.amountInput}>
       <label className={styles.label}>Amount</label>
-      <input className={styles.input} type="text" value={value} onChange={handle} inputMode="decimal" />
+      <Input className={styles.input} type="text" value={value} onChange={handle} inputMode="decimal" />
     </div>
   );
 };
 
-export default React.memo(AmountInput);
+export default AmountInput;

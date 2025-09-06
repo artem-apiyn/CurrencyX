@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import styles from '../../styles/Button.module.scss';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import styles from '@/styles/Button.module.scss';
+import { Button } from '../ui';
+import React from 'react';
 
 type RefreshButtonProps = { 
   onRefresh: () => Promise<void> | void; 
@@ -8,20 +10,28 @@ type RefreshButtonProps = {
 
 const RefreshButton = ({ onRefresh, disabled }: RefreshButtonProps) => {
   const [busy, setBusy] = useState(false);
-  const handle = async () => {
+  const timeoutRef = useRef<number>();
+
+  const handle = useCallback(async () => {
     if (busy || disabled) return;
     setBusy(true);
     try {
       await onRefresh();
     } finally {
-      setTimeout(() => setBusy(false), 600); 
+      timeoutRef.current = window.setTimeout(() => setBusy(false), 600);
     }
-  };
+  }, [busy, disabled, onRefresh]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
   return (
-    <button className={styles.btn} onClick={handle} disabled={busy || disabled}>
+    <Button className={styles.btn} onClick={handle} disabled={busy || disabled}>
       {busy ? 'Refreshing...' : 'Refresh rates'}
-    </button>
+    </Button>
   );
 };
 
-export default RefreshButton;
+export default React.memo(RefreshButton);

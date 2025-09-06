@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import styles from '../../styles/Modal.module.scss';
+import styles from '@/styles/Modal.module.scss';
+import stylesCard from '@/styles/Converter.module.scss'
+import currencies from '@/assets/currencies.json';
+import clsx from 'clsx';
+import { Button, Input } from '../ui';
+import { CheckIcon, CloseIcon, LoopIcon } from '@/assets/icons';
 
 type CurrencyModalProps = {
   open: boolean;
@@ -14,7 +19,7 @@ type ModalRootProps = {
   children: React.ReactNode;
 };
 
-const ModalRoot = ({ children }: ModalRootProps) => {
+const Modal = ({ children }: ModalRootProps) => {
   const el = useMemo(() => {
     let node = document.getElementById('modal-root');
     if (!node) {
@@ -31,7 +36,8 @@ const ModalRoot = ({ children }: ModalRootProps) => {
 const CurrencyModal = ({ open, onClose, rates, selected, onSelect }: CurrencyModalProps) => {
   const [query, setQuery] = useState('');
   const [highlight, setHighlight] = useState(0);
-
+  
+  
   const list = useMemo(() => Object.keys(rates || {}).sort(), [rates]);
   const filtered = useMemo(
     () => list.filter(c => c.toLowerCase().includes(query.trim().toLowerCase())),
@@ -46,7 +52,16 @@ const CurrencyModal = ({ open, onClose, rates, selected, onSelect }: CurrencyMod
       setQuery('');
       setHighlight(0);
       inputRef.current?.focus();
+      
     }
+  }, [open]);
+  
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "auto";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [open]);
 
   const handleKeyDown = useCallback(
@@ -83,34 +98,59 @@ const CurrencyModal = ({ open, onClose, rates, selected, onSelect }: CurrencyMod
 
 
   return (
-    <ModalRoot>
+    <Modal>
       <div className={styles.backdrop} onMouseDown={onClose} role="dialog" aria-modal="true">
         <div className={styles.modal} onMouseDown={(e) => e.stopPropagation()}>
+          
           <div className={styles.header}>
-            <h3>Select currency</h3>
-            <button onClick={onClose} aria-label="Close">✕</button>
+            <h3 className={styles.title}>Select currency</h3>
+            <Button className={styles.close} variant='icon' onClick={onClose} aria-label="Close">
+              <CloseIcon />
+            </Button>
           </div>
-          <input ref={inputRef} className={styles.search} value={query} onChange={(e) => { setQuery(e.target.value); setHighlight(0); }} placeholder="Search currency" />
+
+          <p className={styles.description}>Choose a currency from the list below or use the search bar to find a specific currency.</p>
+          
+          <label className={clsx(stylesCard.input, styles.inputWrapper)}>
+            <div className={styles.icon}>
+              <LoopIcon />
+            </div>
+            <Input ref={inputRef} className={styles.input} value={query} onChange={(e) => { setQuery(e.target.value); setHighlight(0); }} placeholder="Input" />
+
+          </label>
           <div className={styles.list} ref={listRef}>
-            {filtered.map((code, idx) => {
-              const name = 'asdasdasd';
+            {filtered.map((code) => {
+              const currency = currencies.find(c => c.code === code);
+              const name = currency?.name;
               const active = selected === code;
-              const hl = idx === highlight;
               return (
-                <div key={code} className={`${styles.option} ${active ? styles.active : ''} ${hl ? styles.highlight : ''}`} onClick={() => { onSelect(code); onClose(); }}>
-                  <div className={styles.optLeft}>
-                    <div className={styles.optCode}>{code}</div>
-                    <div className={styles.optName}>{name}</div>
+                <Button 
+                  key={code} 
+                  className={clsx(stylesCard.currencyCardBtn, styles.option, active ? styles.active : '')} 
+                  onClick={() => { onSelect(code); onClose(); }}
+                >
+                  <div className={stylesCard.codeWithSymbol}>
+                    <div className={stylesCard.symbol}>{currency?.symbol}</div>
+                  
+                    <div className={stylesCard.currencyCodeWithName}>
+                      <div className={stylesCard.currencyCode}>{code}</div>
+                      <div className={stylesCard.currencyName}>{name}</div>
+                    </div>
                   </div>
-                  {active ? <div className={styles.check}>✓</div> : null}
-                </div>
+                  {active ? (
+                    <div className={styles.check}>
+                      <CheckIcon />
+                    </div>
+                  ) : null}
+                </Button>
+                
               );
             })}
             {filtered.length === 0 && <div className={styles.empty}>No currencies</div>}
           </div>
         </div>
       </div>
-    </ModalRoot>
+    </Modal>
   );
 };
 

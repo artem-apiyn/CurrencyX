@@ -1,4 +1,6 @@
 .btn {
+    display: flex;
+    white-space: nowrap;
     padding:4px 8px;
     background: var(--bg-primary);
     border:1px solid var(--bg-outline);
@@ -8,11 +10,23 @@
     font-weight: 600;
     cursor:pointer;
 }
-.swapBtn {
-    padding:8px 12px;
-    border-radius:8px;
-    background:#fff;
-    border:1px solid #e6eef9;
-    cursor:pointer;
-    font-size:18px;
+.swap {
+    display: flex;
+    align-self: flex-end;
+    padding: 12px;
+    height: 42px;
+    width: 42px;
+    .swapBtn {
+        color: var(--text-base);
+        
+        background:#fff;
+        border: none;
+        cursor:pointer;
+    }
+}
+
+@media (max-width: 480px) {
+    .swap {
+        align-self: center;
+    }
 }

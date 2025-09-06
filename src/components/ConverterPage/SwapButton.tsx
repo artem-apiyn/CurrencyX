@@ -1,5 +1,6 @@
-import React from 'react';
-import styles from '../../styles/Button.module.scss';
+import styles from '@/styles/Button.module.scss';
+import { Button } from '../ui';
+import { SwapIcon } from '@/assets/icons';
 
 type SwapButtonProps = {
   onSwap: () => void 
@@ -7,10 +8,13 @@ type SwapButtonProps = {
 
 const SwapButton = ({ onSwap }: SwapButtonProps) => {
   return (
-    <button className={styles.swapBtn} onClick={onSwap} aria-label="Swap currencies">
-      ⇄
-    </button>
+    <div className={styles.swap}> 
+      <Button variant='icon' className={styles.swapBtn} onClick={onSwap} aria-label="Swap currencies">
+        <SwapIcon />
+      </Button>
+    </div>
+    
   );
 };
 
-export default React.memo(SwapButton);
+export default SwapButton;

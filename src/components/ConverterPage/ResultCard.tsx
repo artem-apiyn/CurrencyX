@@ -1,22 +1,21 @@
 import React from 'react';
-import { formatCurrency } from '../../utils/format';
-import styles from '../../styles/Result.module.scss';
+import { formatCurrency } from '@/utils/format';
+import styles from '@/styles/Result.module.scss';
 
 type ResultCardProps = {
   amount: number;
   rate?: number | undefined;
   from: string;
   to: string;
-  lastUpdated?: number | null;
 };
 
-const ResultCard = ({ amount, rate, from, to, lastUpdated }: ResultCardProps) => {
+const ResultCard = ({ amount, rate, from, to }: ResultCardProps) => {
   if (!rate) {
     return (
-      <div className={styles.resultCard}>
+      <>
         <div className={styles.header}>Conversion result</div>
         <div className={styles.empty}>Conversion not available</div>
-      </div>
+      </>
     );
   }
 
@@ -25,24 +24,31 @@ const ResultCard = ({ amount, rate, from, to, lastUpdated }: ResultCardProps) =>
   const inverse = 1 / rate;
 
   return (
-    <div className={styles.resultCard}>
+    <>
       <div className={styles.header}>Conversion result</div>
-      <div className={styles.amountLarge}>{formatCurrency(converted, to)}</div>
-      <div className={styles.small}>{`${amount} ${from} = ${converted.toFixed(6)} ${to}`}</div>
+      
+      <div className={styles.amount}>
+        <div className={styles.amountLarge}>{formatCurrency(converted, to)}</div>
+        <div className={styles.small}>{`${amount} ${from} = `}</div>
+      </div>
 
       <div className={styles.break} />
 
-      <div className={styles.infoRow}>
-        <div>Exchange Rate</div>
-        <div>{exchangeText}</div>
-      </div>
-      <div className={styles.infoRow}>
-        <div>Inverse Rate</div>
-        <div>{`1 ${to} = ${inverse.toFixed(6)} ${from}`}</div>
+      <div className={styles.details}>
+        <div className={styles.infoRow}>
+          <div className={styles.rate}>Exchange Rate</div>
+          <div>{exchangeText}</div>
+        </div>
+        <div className={styles.infoRow}>
+          <div className={styles.rate}>Inverse Rate</div>
+          <div>{`1 ${to} = ${inverse.toFixed(6)} ${from}`}</div>
+        </div>
       </div>
 
-      {lastUpdated ? <div className={styles.note}>Rates updated: {new Date(lastUpdated).toLocaleString()}</div> : null}
-    </div>
+      <div className={styles.break} />
+
+      <div className={styles.information}>Rates are for informational purposes only and may not reflect real-time market rates</div>
+    </> 
   );
 };
 
