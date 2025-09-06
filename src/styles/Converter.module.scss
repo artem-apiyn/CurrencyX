@@ -1,0 +1,241 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 1000px;
+  max-width: 95%;
+  gap: 30px;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  
+  h1 {
+    display: flex;
+    margin: 0;
+    font-size: 32px;
+    font-weight: 600;
+    justify-content: center;
+  }
+
+  p {
+    display: flex;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    justify-content: center;
+  }
+}
+
+
+.panelRow {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 30px;
+  max-width: 1000px;
+  height: 100%;
+  width: 100%;
+  align-items: flex-start;
+  .leftPanel {
+    flex: 1;
+    display: flex;
+    gap:24px;
+    flex-direction: column;
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .rightPanel {
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    min-height: 318px;
+    height: 100%;
+    width: 336px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    gap: 24px;
+  }
+}
+
+.indicator {
+  gap: 16px;
+  font-size: 13px;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  .network {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    .clock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      .clockIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 12px;
+        height: 12px;
+      }
+    }
+    .networkIndicator {
+      gap: 1.5px;
+      display: flex;
+      align-items: center;
+      padding: 4px 8px;
+      border-radius: 8px;
+      width: 70px;
+      height: 23px;
+    }
+    .online {
+      background-color: #F0FDF4;
+      border: 1px solid #B9F8CF;
+      color: #008236;
+    }
+    .offline {
+      background-color: #FEF2F2;
+      border: 1px solid #FFC9C9;
+      color: #C10007;
+    }
+    .updated {
+      display: flex;
+      align-items: center;
+      color: #6b7280;
+      font-size: 12px;
+    }
+  }
+}
+
+
+
+.amountInput {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  .input {
+    height: 41px;
+    justify-items: center;
+    font-weight: 400;
+  }
+}
+
+.label {
+  line-height: 100%;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.input {
+  font-size: 14px;
+
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg);
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--border-primary);
+    outline: 2px solid var(--bg-outline);
+  }
+}
+
+.selectorRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.currencyCard { 
+  min-width: 150px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap:8px;
+  flex: 1;
+  
+}
+.currencyCardBtn {
+  height: 42px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  text-align: left;
+  align-items: center;
+  gap: 12px;
+  .codeWithSymbol {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    .symbol {
+      display: flex;
+      font-size: 12px;
+      width: 30px;
+      height: 30px;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--bg-outline);
+      background-color: var(--bg-primary);
+      color: var(--primary);
+      border-radius: 100%;
+    }
+    .currencyCodeWithName { 
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      .currencyCode {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 100%;
+        color: var(--text-base);
+      }
+      .currencyName {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 400;
+      }
+    }
+  } 
+}
+
+.error {
+  font-size: 12px;
+  color: #C10007;
+}
+
+@media (max-width: 480px) {
+  .network,
+  .indicator {
+    flex-direction: column;
+  }
+  .container {
+    align-items: flex-start;
+
+  }
+  .center {
+    justify-content: flex-start;
+    padding: 24px;
+  }
+  .selectorRow {
+    flex-direction: column;
+    gap: 0;
+  }
+}

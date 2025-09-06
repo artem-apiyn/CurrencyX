@@ -1,0 +1,32 @@
+.btn {
+    display: flex;
+    white-space: nowrap;
+    padding:4px 8px;
+    background: var(--bg-primary);
+    border:1px solid var(--bg-outline);
+    color: var(--primary);
+    border-radius:8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor:pointer;
+}
+.swap {
+    display: flex;
+    align-self: flex-end;
+    padding: 12px;
+    height: 42px;
+    width: 42px;
+    .swapBtn {
+        color: var(--text-base);
+        
+        background:#fff;
+        border: none;
+        cursor:pointer;
+    }
+}
+
+@media (max-width: 480px) {
+    .swap {
+        align-self: center;
+    }
+}

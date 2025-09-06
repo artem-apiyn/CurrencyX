@@ -13,7 +13,7 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     alias: {
-      "@": path.resolve(__dirname, "src"), 
+      "@": path.resolve(__dirname, "src"),
     },
   },
   module: {
@@ -24,18 +24,25 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.module\.s[ac]ss$/i,
         use: [
-          MiniCssExtractPlugin.loader, 
+          MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
             options: {
-              modules: {
-                exportOnlyLocals: false,
-              },
-              esModule: false, 
-            }
+              modules: true,
+              esModule: false,
+            },
           },
+          "sass-loader",
+        ],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        exclude: /\.module\.s[ac]ss$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
           "sass-loader",
         ],
       },
@@ -63,7 +70,7 @@ module.exports = {
     },
     compress: true,
     port: 3000,
-    historyApiFallback: true, 
+    historyApiFallback: true,
     hot: true,
   },
   mode: "development",
