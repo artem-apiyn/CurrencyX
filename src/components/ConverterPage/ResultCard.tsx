@@ -11,10 +11,6 @@ type ResultCardProps = {
 
 const ResultCard = ({ amount, rate, from, to }: ResultCardProps) => {
 
-  useEffect(() => {
-    console.log(to)
-  }, [to])
-
   if (!rate) {
     return (
       <>
