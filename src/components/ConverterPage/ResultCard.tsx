@@ -20,7 +20,7 @@ const ResultCard = ({ amount, rate, from, to }: ResultCardProps) => {
     );
   }
 
-  const converted = amount * rate;
+  const converted = parseFloat((amount * rate).toFixed(6));
   const exchangeText = `1 ${from} = ${rate.toFixed(6)} ${to}`;
   const inverse = 1 / rate;
   const toSymbol = currencies.find((item) => item.code === to)?.symbol
@@ -30,7 +30,7 @@ const ResultCard = ({ amount, rate, from, to }: ResultCardProps) => {
       <div className={styles.header}>Conversion result</div>
       
       <div className={styles.amount}>
-        <div className={styles.amountLarge}>{toSymbol}{converted.toFixed(6)}</div>
+        <div className={styles.amountLarge}>{toSymbol}{converted}</div>
         <div className={styles.small}>{`${amount} ${from} = `}</div>
       </div>
 
