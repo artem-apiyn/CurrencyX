@@ -1,5 +1,5 @@
-import React from 'react';
-import { formatCurrency } from '@/utils/format';
+import React, { useEffect } from 'react';
+import currencies from '@/assets/currencies.json'
 import styles from '@/styles/Result.module.scss';
 
 type ResultCardProps = {
@@ -10,6 +10,11 @@ type ResultCardProps = {
 };
 
 const ResultCard = ({ amount, rate, from, to }: ResultCardProps) => {
+
+  useEffect(() => {
+    console.log(to)
+  }, [to])
+
   if (!rate) {
     return (
       <>
@@ -22,13 +27,14 @@ const ResultCard = ({ amount, rate, from, to }: ResultCardProps) => {
   const converted = amount * rate;
   const exchangeText = `1 ${from} = ${rate.toFixed(6)} ${to}`;
   const inverse = 1 / rate;
+  const toSymbol = currencies.find((item) => item.code === to)?.symbol
 
   return (
     <>
       <div className={styles.header}>Conversion result</div>
       
       <div className={styles.amount}>
-        <div className={styles.amountLarge}>{formatCurrency(converted, to)}</div>
+        <div className={styles.amountLarge}>{toSymbol}{converted.toFixed(6)}</div>
         <div className={styles.small}>{`${amount} ${from} = `}</div>
       </div>
 

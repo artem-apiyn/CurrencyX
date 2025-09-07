@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo, useLayoutEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { fetchRatesVatComply } from '../api/rates';
 import { loadCache, saveCache } from '../utils/storage';
 import { RatesCache, RatesResponse } from '../utils/types';
@@ -13,36 +13,43 @@ export function useRates() {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async (force = false) => {
-    const stale = !lastUpdated || Date.now() - lastUpdated > TTL;
-    if (!force && !stale && rates) return;
+  const loadRef = useRef<(force?: boolean) => Promise<void>>();
 
-    setLoading(true);
-    try {
-      const apiRes: RatesResponse = await fetchRatesVatComply();
-      if (!apiRes?.rates) throw new Error('Invalid API response');
+  useEffect(() => {
+    loadRef.current = async (force = false) => {
+      const stale = !lastUpdated || Date.now() - lastUpdated > TTL;
+      if (!force && !stale && rates) return;
 
-      const ts = Date.now();
-      setRates(apiRes.rates);
-      setBase(apiRes.base || 'EUR');
-      setLastUpdated(ts);
-      saveCache(CACHE_KEY, { base: apiRes.base || 'EUR', rates: apiRes.rates, timestamp: ts });
-      setError(null);
-    } catch (e: unknown) {
-      const errMsg = e instanceof Error ? e.message : String(e);
-      const cache: RatesCache | null = loadCache<RatesCache>(CACHE_KEY);
-      if (cache) {
-        setRates(cache.rates);
-        setBase(cache.base);
-        setLastUpdated(cache.timestamp);
-        setError(`Using cached rates — ${errMsg}`);
-      } else {
-        setError(`Failed to fetch rates and no cache available — ${errMsg}`);
+      setLoading(true);
+      try {
+        const apiRes: RatesResponse = await fetchRatesVatComply();
+        if (!apiRes?.rates) throw new Error('Invalid API response');
+
+        const ts = Date.now();
+        setRates(apiRes.rates);
+        setBase(apiRes.base || 'EUR');
+        setLastUpdated(ts);
+        saveCache(CACHE_KEY, {
+          base: apiRes.base || 'EUR',
+          rates: apiRes.rates,
+          timestamp: ts,
+        });
+        setError(null);
+      } catch (e: unknown) {
+        const errMsg = e instanceof Error ? e.message : String(e);
+        const cache: RatesCache | null = loadCache<RatesCache>(CACHE_KEY);
+        if (cache) {
+          setRates(cache.rates);
+          setBase(cache.base);
+          setLastUpdated(cache.timestamp);
+        } else {
+          setError(`Failed to fetch rates and no cache available — ${errMsg}`);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, []); 
+    };
+  }, [lastUpdated, rates]);
 
   useEffect(() => {
     const cache = loadCache<RatesCache>(CACHE_KEY);
@@ -52,17 +59,17 @@ export function useRates() {
       setLastUpdated(cache.timestamp);
     }
 
-    load();
+    loadRef.current?.();
 
-    const onOnline = () => load(true);
+    const onOnline = () => loadRef.current?.(true);
     window.addEventListener('online', onOnline);
     return () => window.removeEventListener('online', onOnline);
-  }, [load]);
+  }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => load(true), TTL);
+    const interval = setInterval(() => loadRef.current?.(true), TTL);
     return () => clearInterval(interval);
-  }, [load]);
+  }, []);
 
   return {
     rates,
@@ -70,6 +77,6 @@ export function useRates() {
     lastUpdated,
     isLoading,
     error,
-    refresh: () => load(true),
+    refresh: () => loadRef.current?.(true),
   };
 }
